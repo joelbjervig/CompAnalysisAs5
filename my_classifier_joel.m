@@ -20,13 +20,13 @@ imds = imageDatastore('imagedata');
 % build layers
 layers = [
     imageInputLayer([imSizeX,imSizeY]);
-    convolution2dLayer(10,20)
+    % create 32 convolution filters of size 3*3
+    convolution2dLayer(3,32)
     reluLayer
     maxPooling2dLayer(2,'Stride',2)
     fullyConnectedLayer(10)
     softmaxLayer
     classificationLayer];
-
-
 end
+options = 
 
