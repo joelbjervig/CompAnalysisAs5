@@ -1,4 +1,4 @@
-function S = my_classifier(im, parameters1, parameter2)
+function S = my_classifier_joel(im, parameters1, parameter2)
 %This classifier is not state of the art... but should give you an idea of
 %the format we expect to make it easy to keep track of your scores. Input
 %is the image and different parameters. Output is a 1 x 3 vector of the 
@@ -8,6 +8,18 @@ function S = my_classifier(im, parameters1, parameter2)
 %on average, approx. a 4% chance of guessing the correct answer. 
 %
 
+%load data
+labels = importdata("labels.txt");
 S = floor(rand(1,3)*3);
+
+% image datastore size of one image: 301*225 pixels
+imds = imageDatastore('imagedata','LabelSource');
+%size of training da
+[imSizeX, imSizeY] = size(readimage(imds,1));
+
+% insert input layer of size 301*255
+layer = imageInputLayer(imSizeX,imSizeY);
+
+
 end
 
