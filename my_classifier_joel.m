@@ -13,7 +13,7 @@ function S = my_classifier_joel(im, parameters1, parameter2)
 
 
 %load labels in cell format to match imds
-labels = mat2cell(importdata("labels.txt"));
+labels = mat2cell(importdata("labels.txt"), ones(1200,1),3);
 
 % image datastore size of one image: 301*225 pixels
 imds = imageDatastore('imagedata');
@@ -57,7 +57,6 @@ layers = [
     plot(lgraph)
 
     options = trainingOptions('sgdm','MaxEpochs',20,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
-    net = trainNetwork(imds,layers,options);
-
+    [net,info] = trainNetwork(imds,layers,options);
 end
 
