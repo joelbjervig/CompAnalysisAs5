@@ -14,15 +14,22 @@ function S = my_classifier_joel(im, parameters1, parameter2)
 
 %load labels in cell format to match imds
 labels = importdata("labels.txt");
-labels_string = [string(labels(:,1))+string(labels(:,2)) + string(labels(:,3))];
+labels_string = string(labels(:,1))+string(labels(:,2)) + string(labels(:,3));
+labels_categorical = categorical(labels_string);
 
 % image datastore size of one image: 301*225 pixels
 imds = imageDatastore('imagedata');
 
 % add labels to image datastore
-imds.Labels = labels_string;
+imds.Labels = labels_categorical;
 
-%size of training images
+% partition into test and train data
+% 75 percent to be test. There are 1200 datafiles, and 27 combinations of
+% digits
+numTrainingFiles = floor(0.75*length(labels)/27);
+[imdsTrain,imdsTest] = splitEachLabel(imds,numTrainingFiles,'randomize');
+
+% size of training images
 [imSizeX, imSizeY] = size(readimage(imds,1));
 
 % build layers
@@ -42,10 +49,12 @@ layers = [
     % by providing an abstracted form of the representation
     maxPooling2dLayer(2,'Stride',2,'name','Max pooling')
     
-    % Fully Connected (output size = 10) layers in a neural networks are those layers
+    % Fully Connected layers in a neural networks are those layers
     % where all the inputs from one layer are connected to every
     % activation unit of the next layer
-    fullyConnectedLayer(10, 'name','Fully connected layer')
+    % (output size = 27. There exists 27 different ways to form a
+    % three digit number with three digits)
+    fullyConnectedLayer(27, 'name','Fully connected layer')
     
     % Softmax assigns decimal probabilities to each class in a multi-class problem
     softmaxLayer('name','Softmax')
@@ -58,6 +67,14 @@ layers = [
     plot(lgraph)
 
     options = trainingOptions('sgdm','MaxEpochs',20,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
-    [net,info] = trainNetwork(imds,layers,options);
+    [net,info] = trainNetwork(imdsTrain,layers,options);
+    
+    % Run the trained network on the test set
+    YPred = classify(net,imdsTest);
+    YTest = imdsTest.Labels;
+    
+    % Caluclate accuracy
+    accuracy = sum(YPred == YTest)/numel(YTest);
+
 end
 
