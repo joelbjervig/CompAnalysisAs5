@@ -13,13 +13,14 @@ function S = my_classifier_joel(im, parameters1, parameter2)
 
 
 %load labels in cell format to match imds
-labels = mat2cell(importdata("labels.txt"), ones(1200,1),3);
+labels = importdata("labels.txt");
+labels_string = [string(labels(:,1))+string(labels(:,2)) + string(labels(:,3))];
 
 % image datastore size of one image: 301*225 pixels
 imds = imageDatastore('imagedata');
 
 % add labels to image datastore
-imds.Labels = labels;
+imds.Labels = labels_string;
 
 %size of training images
 [imSizeX, imSizeY] = size(readimage(imds,1));
