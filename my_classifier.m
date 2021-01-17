@@ -8,6 +8,15 @@ function S = my_classifier(im, parameters1, parameter2)
 %on average, approx. a 4% chance of guessing the correct answer. 
 %
 
+net = googlenet;
+inputSize = net.Layers(1).InputSize
+% 301 225 oursize
+% 224 224 their size
+im=imresize(im,[224 224]);
+classNames = net.Layers(end).ClassNames;
+numClasses = numel(classNames);
+disp(classNames(randperm(numClasses,10)))
+
 S = floor(rand(1,3)*3);
 end
 
