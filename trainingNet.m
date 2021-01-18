@@ -39,11 +39,11 @@ layers = [
     imageInputLayer(imagesize,'name','Input layer');
     
     % create 32 convolution layers of size 3*3
-    convolution2dLayer(3,32,'Padding','same','name','Convolution layers 1')
+    convolution2dLayer(5,20,'name','Convolution layers 1')
     % rectified linear activation function
     %  - output the input if it is positive, otherwise, output is zero
     
-    batchNormalizationLayer('name','batch Normalization Layer 1')
+    %batchNormalizationLayer('name','batch Normalization Layer 1')
 
     %A batch normalization layer normalizes each input channel across a mini-batch.
     % To speed up training of convolutional neural networks and reduce the sensitivity
@@ -58,10 +58,10 @@ layers = [
 
 
     % another one of those
-    convolution2dLayer(3,32,'Padding','same','name','Convolution layers 2')
-    batchNormalizationLayer('name','batch Normalization Layer 2')
-    reluLayer('name','ReLU 2')
-    maxPooling2dLayer(2,'Stride',2,'name','Max pooling 2')
+%     convolution2dLayer(3,32,'Padding','same','name','Convolution layers 2')
+%     batchNormalizationLayer('name','batch Normalization Layer 2')
+%     reluLayer('name','ReLU 2')
+%     maxPooling2dLayer(2,'Stride',2,'name','Max pooling 2')
 
 
     % Fully Connected layers in a neural networks are those layers
@@ -81,7 +81,7 @@ layers = [
     figure
     plot(lgraph)
     
-    options = trainingOptions('sgdm','MaxEpochs',5,'InitialLearnRate',1e-3);
+    options = trainingOptions('sgdm','MaxEpochs',4);
     %options = trainingOptions('sgdm','MaxEpochs',1,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
     [net, info] = trainNetwork(imds,layers,options);
     save net
