@@ -1,4 +1,4 @@
-function [net,accuracy,info] = trainingNet()
+function [net,info] = trainingNet()
 %This classifier is not state of the art... but should give you an idea of
 %the format we expect to make it easy to keep track of your scores. Input
 %is the image and different parameters. Output is a 1 x 3 vector of the 
@@ -17,8 +17,16 @@ labels = importdata("labels.txt");
 labels_string = string(labels(:,1))+string(labels(:,2)) + string(labels(:,3));
 labels_categorical = categorical(labels_string);
 
+
 % image datastore size of one image: 301*225 pixels
 imds = imageDatastore('imagedata');
+
+% preprocessing
+% 
+% for k = 1:length(labels)
+%     imds.Files{k}=medfilt2(imread(sprintf('imagedata/train_%04d.png', k)), [7,7]);
+%     imds.Files{k}=imbinarize(imread(sprintf('imagedata/train_%04d.png', k)), 0.6);
+% end
 
 % add labels to image datastore
 imds.Labels = labels_categorical;
@@ -39,7 +47,7 @@ layers = [
     imageInputLayer(imagesize,'name','Input layer');
     
     % create 32 convolution layers of size 3*3
-    convolution2dLayer(3,32,'Padding','same','name','Convolution layers 1')
+    convolution2dLayer(5,20,'Padding','same','name','Convolution layers')
     % rectified linear activation function
     %  - output the input if it is positive, otherwise, output is zero
     
@@ -47,22 +55,12 @@ layers = [
     % To speed up training of convolutional neural networks and reduce the sensitivity
     % to network initialization, use batch normalization layers between convolutional
     % layers and nonlinearities, such as ReLU layers.
-    batchNormalizationLayer('name','batch Normalization Layer 1')
-    reluLayer('name','ReLU 1')
+    %batchNormalizationLayer('name','batch Normalization Layer')
+    reluLayer('name','ReLU')
     
-    % maxpooling (size of ) mdownsamples the input to help over-fitting
+    % maxpooling (size of ) downsamples the input to help over-fitting
     % by providing an abstracted form of the representation
-    maxPooling2dLayer(2,'Stride',2,'name','Max pooling 1')
-    
-    % create a second instance of 32 convolution layers of size 6*6 with
-    % batch norm and ReLU
-    convolution2dLayer(3,32,'Padding','same','name','Convolution layers 2')
-    batchNormalizationLayer('name','batch Normalization Layer 2')
-    reluLayer('name','ReLU2')
- 
-    % maxpooling again
-    maxPooling2dLayer(2,'Stride',2,'name','Max pooling 2')
-    
+    maxPooling2dLayer(2,'Stride',2,'name','Max pooling')
 
     % Fully Connected layers in a neural networks are those layers
     % where all the inputs from one layer are connected to every
@@ -81,7 +79,7 @@ layers = [
     figure
     plot(lgraph)
     
-    options = trainingOptions('sgdm','MaxEpochs',14,'InitialLearnRate',1e-4);
+    options = trainingOptions('sgdm','MaxEpochs',14,'InitialLearnRate',1e-3);
     %options = trainingOptions('sgdm','MaxEpochs',1,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
     [net, info] = trainNetwork(imds,layers,options);
 %     % Run the trained network on the test set
@@ -90,6 +88,5 @@ layers = [
 %     
 %     % Caluclate accuracy
 %     accuracy = sum(YPred == YTest)/numel(YTest);
-% 
-% end
+end
 

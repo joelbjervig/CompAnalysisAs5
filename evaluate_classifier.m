@@ -15,7 +15,7 @@ N = size(true_labels,1);
 for k = 1:N
     k
     im = imread(sprintf('imagedata/train_%04d.png', k));
-    my_labels(k,:) = my_classifier_joel(im);
+    my_labels(k,:) = my_classifier_joel(im,net);
 end
 fprintf('\n\nAverage precision: \n');
 fprintf('%f\n\n',mean(sum(abs(true_labels - my_labels),2)==0));
