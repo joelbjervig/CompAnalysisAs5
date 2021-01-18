@@ -13,7 +13,6 @@ tic; % Start the timer
 my_labels = zeros(size(true_labels));
 N = size(true_labels,1);
 for k = 1:N
-    k
     im = imread(sprintf('imagedata/train_%04d.png', k));
     my_labels(k,:) = my_classifier_joel(im,net);
 end
