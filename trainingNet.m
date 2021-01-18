@@ -17,9 +17,8 @@ labels = importdata("labels.txt");
 labels_string = string(labels(:,1))+string(labels(:,2)) + string(labels(:,3));
 labels_categorical = categorical(labels_string);
 
-
 % image datastore size of one image: 301*225 pixels
-imds = imageDatastore('imagedata');
+imds = imageDatastore('imagedata_processed');
 
 % preprocessing
 % 
