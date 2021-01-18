@@ -1,4 +1,4 @@
-function S = my_classifier_joel(im, parameters1, parameter2)
+function A = my_classifier_joel(im)
 %This classifier is not state of the art... but should give you an idea of
 %the format we expect to make it easy to keep track of your scores. Input
 %is the image and different parameters. Output is a 1 x 3 vector of the 
@@ -10,6 +10,7 @@ function S = my_classifier_joel(im, parameters1, parameter2)
 
 %example to use the evaluate_classifier.m file, the output should be of
 %this form: [2,1,3] i.e an array of length 3 containg the classified digits
+<<<<<<< HEAD
 
 
 %load labels in cell format to match imds
@@ -61,4 +62,10 @@ layers = [
     options = trainingOptions('sgdm','MaxEpochs',20,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
     [net,info] = trainNetwork(imds,layers,options);
 end
+=======
+%[net,accuracy,info] = trainingNet();
+load net;
+C = char((classify(net,im)));
+A = [str2num(C(1)) str2num(C(2)) str2num(C(3))];
+>>>>>>> 5544490ab6fa465ed6c6e0e4bd6b64f4b130022e
 
