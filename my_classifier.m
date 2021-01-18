@@ -15,13 +15,16 @@ function S = my_classifier_joel(im, parameters1, parameter2)
 %load labels in cell format to match imds
 labels = importdata("labels.txt");
 labels_string = string(labels(:,1))+string(labels(:,2)) + string(labels(:,3));
+labels_categorical=categorical(labels_string(1:900,:));
+Vdata=labels_string(901:end,:);
+
 
 
 % image datastore size of one image: 301*225 pixels
 imds = imageDatastore('imagedata');
 
 % add labels to image datastore
-imds.Labels = labels_string;
+imds.Labels = labels_categorical;
 
 %size of training images
 [imSizeX, imSizeY] = size(readimage(imds,1));
@@ -46,19 +49,18 @@ layers = [
     % Fully Connected (output size = 10) layers in a neural networks are those layers
     % where all the inputs from one layer are connected to every
     % activation unit of the next layer
-    fullyConnectedLayer(10, 'name','Fully connected layer')
-    
+    fullyConnectedLayer(27, 'name','Fully connected layer')
+        
     % Softmax assigns decimal probabilities to each class in a multi-class problem
     softmaxLayer('name','Softmax')
     % classification 
-    classificationLayer('name','Classification layer')
-    ];
+    classificationLayer('name','Classification layer')];
 
-    lgraph = layerGraph(layers);
-    figure
-    plot(lgraph)
+%     lgraph = layerGraph(layers);
+%     figure
+%     plot(lgraph
 
-    options = trainingOptions('sgdm','MaxEpochs',20,'InitialLearnRate',1e-4,'Verbose',false,'Plots','training-progress');
-    [net,info] = trainNetwork(imds,layers,options);
+    options = trainingOptions('sgdm','MaxEpochs',20,'InitialLearnRate',1e-4,'ValidationData',Vdata,'Verbose',false,'Plots','training-progress');
+    [net,info] = trainNetwork(imds,layers,options); 
 end
 
